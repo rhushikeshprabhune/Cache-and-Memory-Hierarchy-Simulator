@@ -20,7 +20,7 @@ typedef struct{
 class L2CACHE
 {
 	public:
-		unsigned int BLOCKSIZE, L2_SIZE, L2_ASSOC, sets, bo, indexsizeL2, tagsizeL2, setsL2, L2_numtag, L2_numblocks, L2En, DSEn;
+	unsigned int BLOCKSIZE, L2_SIZE, L2_ASSOC, sets, bo, indexsizeL2, tagsizeL2, setsL2, L2_numtag, L2_numblocks, L2En, DSEn;
 	unsigned int readsL2, writesL2, read_missesL2, write_missesL2, write_backsL2, sector_miss, block_miss;
 	unsigned int L2_DATA_BLOCKS, L2_ADDR_TAGS;
 	table ** ArrL2; //Two dimentional array to hold the index values which will point to the blocks in that index
@@ -122,7 +122,7 @@ class L2CACHE
 class L1CACHE
 {
 	public:
-		unsigned int BLOCKSIZE, L1_SIZE, L1_ASSOC, sets, block, bo, indexsize, tagsize;
+	unsigned int BLOCKSIZE, L1_SIZE, L1_ASSOC, sets, block, bo, indexsize, tagsize;
 	unsigned int reads, writes, read_misses, write_misses, write_backs, L2En, DSEn;
 	L2CACHE * next; //Next level cache
 	table ** Arr; //Two dimentional array to hold the index values which will point to the blocks in that index
