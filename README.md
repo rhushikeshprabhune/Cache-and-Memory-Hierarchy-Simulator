@@ -1,1 +1,2 @@
 # Cache-and-Memory-Hierarchy-Simulator
+Designed a trace-driven, 2-level flexible cache simulator with a decoupled sector L2 cache using C++. Implemented LRU replacement policy and write back write allocate (WBWA) write policy for all caches. Studied the effect of different cache configurations on miss rates, average access times and the physical cache area by varying cache size, block size, associativity, address tags, and data blocks.
