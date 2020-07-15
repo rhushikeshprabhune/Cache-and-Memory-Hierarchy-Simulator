@@ -23,9 +23,9 @@ class L2CACHE
 	unsigned int BLOCKSIZE, L2_SIZE, L2_ASSOC, sets, bo, indexsizeL2, tagsizeL2, setsL2, L2_numtag, L2_numblocks, L2En, DSEn;
 	unsigned int readsL2, writesL2, read_missesL2, write_missesL2, write_backsL2, sector_miss, block_miss;
 	unsigned int L2_DATA_BLOCKS, L2_ADDR_TAGS;
-	table ** ArrL2; //Two dimentional array to hold the index values which will point to the blocks in that index
-	decouple_sector_tag * L2_tagstore; //to hold tagstore of L2
-	decouple_sector_data * L2_datastore; //to hold datastore of L2
+	table** ArrL2; //Two dimentional array to hold the index values which will point to the blocks in that index
+	decouple_sector_tag* L2_tagstore; //to hold tagstore of L2
+	decouple_sector_data* L2_datastore; //to hold datastore of L2
 
 
 	L2CACHE(unsigned int c_BLOCKSIZE, unsigned int c_L2_SIZE, unsigned int c_L2_ASSOC, unsigned int c_L2_DATA_BLOCKS, unsigned int c_L2_ADDR_TAGS)
@@ -63,7 +63,7 @@ class L2CACHE
 				L2En = 1;
 			}
 
-			ArrL2 = new table * [sets]; //Define the two dimentional array
+			ArrL2 = new table* [sets]; //Define the two dimentional array
 			for (unsigned int i = 0; i < sets; i++)
 				ArrL2[i] = new table[L2_ASSOC];
 
@@ -124,8 +124,8 @@ class L1CACHE
 	public:
 	unsigned int BLOCKSIZE, L1_SIZE, L1_ASSOC, sets, block, bo, indexsize, tagsize;
 	unsigned int reads, writes, read_misses, write_misses, write_backs, L2En, DSEn;
-	L2CACHE * next; //Next level cache
-	table ** Arr; //Two dimentional array to hold the index values which will point to the blocks in that index
+	L2CACHE* next; //Next level cache
+	table** Arr; //Two dimentional array to hold the index values which will point to the blocks in that index
 	int l2count;
 
 	L1CACHE(unsigned int c_BLOCKSIZE, unsigned int c_L1_SIZE, unsigned int c_L1_ASSOC, L2CACHE * c_next, unsigned int c_DSEn, unsigned int c_L2En)
@@ -146,7 +146,7 @@ class L1CACHE
 		write_backs = 0;
 		L2En = c_L2En;
 		DSEn = c_DSEn;
-		Arr = new table * [sets]; //Define the two dimentional array
+		Arr = new table* [sets]; //Define the two dimentional array
 		for (unsigned int i = 0; i < sets; i++)
 			Arr[i] = new table[L1_ASSOC];
 
@@ -194,10 +194,13 @@ void L2CACHE::readFromAddressDS(unsigned int addr)
 		for (unsigned int i = 0; i < L2_DATA_BLOCKS; i++)
 		{
 			if (L2_datastore[index].ds_valid_bit[i] == 1)
+			{
 				FoundValid = 1;
+				break;
+			}
 		}
 
-		if (FoundValid == 1)
+		if (FoundValid==1)
 			block_miss++;
 		else
 			sector_miss++;
@@ -222,10 +225,8 @@ void L2CACHE::readFromAddressDS(unsigned int addr)
 			L2_datastore[index].ds_valid_bit[Pblock] = 1;
 			L2_datastore[index].ds_sel_bit[Pblock] = Ntag;
 			L2_datastore[index].ds_dirty_bit[Pblock] = 0;
-
 		}
-
-		else if (L2_tagstore[index].ds_tag[Ntag] == tag)
+		else if(L2_tagstore[index].ds_tag[Ntag]==tag)
 		{
 			L2_datastore[index].ds_valid_bit[Pblock] = 1;
 			L2_datastore[index].ds_sel_bit[Pblock] = Ntag;
@@ -253,8 +254,6 @@ void L2CACHE::writeToAddressDS(unsigned int z)
 
 	if (r_hit == 0) //miss case
 	{
-
-
 		if (L2_datastore[index].ds_dirty_bit[Pblock] == 1)
 		{
 			write_backsL2++;
@@ -265,7 +264,10 @@ void L2CACHE::writeToAddressDS(unsigned int z)
 		for (unsigned int i = 0; i < L2_DATA_BLOCKS; i++)
 		{
 			if (L2_datastore[index].ds_valid_bit[i] == 1)
+			{
 				FoundValid = 1;
+				break;
+			}
 		}
 
 		if (FoundValid == 1)
@@ -629,10 +631,10 @@ void L1CACHE::readFromAddressL1(unsigned int addr)
 			if (DSEn == 1)
 			{
 				l2count++;
-				next - > readFromAddressDS(addr);
+				next->readFromAddressDS(addr);
 			}
 			if (L2En == 1)
-				next - > readFromAddressL2(addr);
+				next->readFromAddressL2(addr);
 		}
 
 		if (invalid == 0) //when all are filled, check highest LRU_count and update tag to that block
@@ -661,18 +663,18 @@ void L1CACHE::readFromAddressL1(unsigned int addr)
 			{
 				write_backs++;
 				if (DSEn == 1)
-					next - > writeToAddressDS(z);
+					next->writeToAddressDS(z);
 				if (L2En == 1)
-					next - > writeToAddressL2(z);
+					next->writeToAddressL2(z);
 			}
 			Arr[indexr][highest_LRU].t_dirty_bit = 0;
 			if (DSEn == 1)
 			{
 				l2count++;
-				next - > readFromAddressDS(addr);
+				next->readFromAddressDS(addr);
 			}
 			if (L2En == 1)
-				next - > readFromAddressL2(addr);
+				next->readFromAddressL2(addr);
 
 		}
 
@@ -989,7 +991,7 @@ void L2CACHE::printStatsL2()
 
 int main(int argc, char * argv[])
 {
-	char * trace_file;
+	char* trace_file;
 	unsigned int c_BLOCKSIZE = atoi(argv[1]); //command line arguments
 	unsigned int c_L1_SIZE = atoi(argv[2]);
 	unsigned int c_L1_ASSOC = atoi(argv[3]);
@@ -1009,7 +1011,7 @@ int main(int argc, char * argv[])
 	}
 	trace_file = argv[8];
 	L2CACHE L2(c_BLOCKSIZE, c_L2_SIZE, c_L2_ASSOC, c_L2_DATA_BLOCKS, c_L2_ADDR_TAGS);
-	L2CACHE * c_next = & L2;
+	L2CACHE* c_next = &L2;
 	L1CACHE L1(c_BLOCKSIZE, c_L1_SIZE, c_L1_ASSOC, c_next, c_DSEn, c_L2En);
 	ifstream infile(trace_file);
 	char instr;
